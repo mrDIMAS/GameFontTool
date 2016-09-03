@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeLite_Workspace Name="GameFontTool" Database="">
+  <Project Name="GameFontTool" Path="GameFontTool.project" Active="Yes"/>
+  <BuildMatrix>
+    <WorkspaceConfiguration Name="DynamicLibrary" Selected="no">
+      <Environment/>
+      <Project Name="GameFontTool" ConfigName="DynamicLibrary"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Standalone" Selected="no">
+      <Environment/>
+      <Project Name="GameFontTool" ConfigName="Standalone"/>
+    </WorkspaceConfiguration>
+    <WorkspaceConfiguration Name="Sample" Selected="yes">
+      <Environment/>
+      <Project Name="GameFontTool" ConfigName="Sample"/>
+    </WorkspaceConfiguration>
+  </BuildMatrix>
+</CodeLite_Workspace>

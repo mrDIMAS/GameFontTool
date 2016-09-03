@@ -1,0 +1,1 @@
+./Release/gamefonttool.c.o ./Release/sample.c.o   
