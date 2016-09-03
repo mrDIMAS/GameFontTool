@@ -2,12 +2,12 @@
 ## Auto Generated makefile by CodeLite IDE
 ## any manual changes will be erased      
 ##
-## Sample
+## DynamicLibrary
 ProjectName            :=GameFontTool
-ConfigurationName      :=Sample
+ConfigurationName      :=DynamicLibrary
 WorkspacePath          :=C:/GameFontTool/codelite_projects
 ProjectPath            :=C:/GameFontTool/codelite_projects
-IntermediateDirectory  :=./Release
+IntermediateDirectory  :=./Debug
 OutDir                 := $(IntermediateDirectory)
 CurrentFileName        :=
 CurrentFilePath        :=
@@ -27,8 +27,8 @@ OutputSwitch           :=-o
 LibraryPathSwitch      :=-L
 PreprocessorSwitch     :=-D
 SourceSwitch           :=-c 
-OutputFile             :=../samples/sample.exe
-Preprocessors          :=$(PreprocessorSwitch)_TEST 
+OutputFile             :=../bin/libgamefonttool.dll
+Preprocessors          :=$(PreprocessorSwitch)NDEBUG 
 ObjectSwitch           :=-o 
 ArchiveOutputSwitch    := 
 PreprocessOnlySwitch   :=-E
@@ -37,12 +37,12 @@ PCHCompileFlags        :=
 MakeDirCommand         :=makedir
 RcCmpOptions           := 
 RcCompilerName         :=C:/MinGW-4.8.1/bin/windres.exe
-LinkOptions            :=  
-IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)C:/MinGW-4.8.1/include/ $(IncludeSwitch)C:/MinGW-4.8.1/include/freetype2 
+LinkOptions            :=  -Wl,--out-implib,libgamefonttool.a 
+IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). $(IncludeSwitch)C:/MinGW-4.8.1/include/freetype2 
 IncludePCH             := 
 RcIncludePath          := 
-Libs                   := $(LibrarySwitch)freetype $(LibrarySwitch)opengl32 $(LibrarySwitch)gdi32 $(LibrarySwitch)glu32 
-ArLibs                 :=  "libfreetype.a" "libopengl32.a" "libgdi32.a" "libglu32.a" 
+Libs                   := $(LibrarySwitch)freetype 
+ArLibs                 :=  "libfreetype.a" 
 LibPath                := $(LibraryPathSwitch). 
 
 ##
@@ -53,7 +53,7 @@ AR       := C:/MinGW-4.8.1/bin/ar.exe rcu
 CXX      := C:/MinGW-4.8.1/bin/g++.exe
 CC       := C:/MinGW-4.8.1/bin/gcc.exe
 CXXFLAGS :=   $(Preprocessors)
-CFLAGS   :=  -ggdb -O0 -Werror -ansi -pedantic  $(Preprocessors)
+CFLAGS   :=  -g -O3 -Wall -Werror -ansi -pedantic  $(Preprocessors)
 ASFLAGS  := 
 AS       := C:/MinGW-4.8.1/bin/as.exe
 
@@ -78,14 +78,16 @@ $(OutputFile): $(IntermediateDirectory)/.d $(Objects)
 	@$(MakeDirCommand) $(@D)
 	@echo "" > $(IntermediateDirectory)/.d
 	@echo $(Objects0)  > $(ObjectsFileList)
-	$(LinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
+	$(SharedObjectLinkerName) $(OutputSwitch)$(OutputFile) @$(ObjectsFileList) $(LibPath) $(Libs) $(LinkOptions)
+	@$(MakeDirCommand) "C:\GameFontTool\codelite_projects/.build-dynamiclibrary"
+	@echo rebuilt > "C:\GameFontTool\codelite_projects/.build-dynamiclibrary/GameFontTool"
 
 MakeIntermediateDirs:
-	@$(MakeDirCommand) "./Release"
+	@$(MakeDirCommand) "./Debug"
 
 
 $(IntermediateDirectory)/.d:
-	@$(MakeDirCommand) "./Release"
+	@$(MakeDirCommand) "./Debug"
 
 PreBuild:
 
@@ -115,6 +117,6 @@ $(IntermediateDirectory)/sample.c$(PreprocessSuffix): ../samples/sample.c
 ## Clean
 ##
 clean:
-	$(RM) -r ./Release/
+	$(RM) -r ./Debug/
 
 

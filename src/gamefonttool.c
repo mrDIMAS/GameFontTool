@@ -76,6 +76,7 @@ struct gft_font_t {
     gft_rgba_pixel_t * pixels;
     int atlasWidth;
     int atlasHeight;
+    int options;
 };
 
 #define MASKBITS 0x3F
@@ -94,7 +95,7 @@ gft_error_t gft_utf8_to_utf32(const char * inString, gft_symbol_t * out) {
     int size = strlen(inString);  
  
     for(i = 0; i < size; ) {
-        unsigned int ch;
+        unsigned int ch = 0;
         
         if((in[i] & MASK6BYTES) == MASK6BYTES) {
             /* 1111110x 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx 10xxxxxx */
@@ -135,7 +136,7 @@ gft_utf32_strlen
 ====================================
 */
 gft_error_t gft_utf32_strlen(gft_symbol_t * utf32str, int * out) {
-    gft_symbol_t * s;
+    gft_symbol_t * s = NULL;
     
     if(!out || !utf32str) {
         return GFT_BAD_PARAMETER;
@@ -235,6 +236,20 @@ static void gft_glyph_packer_free(gft_packer_node_t * node) {
 
 /*
 ====================================
+gft_ceil_pow2
+====================================
+*/
+static unsigned int gft_ceil_pow2(unsigned int v) {
+	unsigned int power = 1;
+	while (v >>= 1) {
+		power <<= 1;
+	}
+	power <<= 1;
+	return power;
+}
+
+/*
+====================================
 gft_font_compute_atlas_size
     - computes atlas size (side length of rectangle)
 ====================================
@@ -255,6 +270,11 @@ static int gft_font_compute_atlas_size(gft_font_t * font) {
     various count of fonts to be sure, that is good value for all cases
     */
     size = sqrt(totalArea) * 1.1f;
+    
+    /* for old gpu's adjust size to be power of two */
+    if(font->options & GFT_ATLAS_STRICT_POW2_SIZE) {
+        size = gft_ceil_pow2(size);
+    }
 
     return size;
 }
@@ -341,7 +361,7 @@ static gft_error_t gft_font_pack(gft_font_t * font) {
 	gft_glyph_packer_free(root);
 
     /* free pixels for each glyph */
-	for (i = 0; i < 256; ++i) {
+	for (i = 0; i < font->glyphCount; ++i) {
 		free(font->glyphs[i].pixels);
         font->glyphs[i].pixels = NULL;
 	}
@@ -354,60 +374,60 @@ static gft_error_t gft_font_pack(gft_font_t * font) {
 gft_font_create
 ====================================
 */
-gft_error_t gft_font_create(const char * filename, float size, gft_font_t ** fontPtr) {
-    FT_Library ftLibrary;
-    FT_Face face;    
+gft_error_t gft_font_create(const char * filename, float size, int options, const char * symbolSet, gft_font_t ** fontPtr) {
+    FT_Library ftLibrary = NULL;
+    FT_Face face = NULL;    
     gft_font_t * font = NULL;
     int i = 0;
     int k = 0;
     int col = 0;
     int row = 0;
-    int charIndexOffset = 0;
     FT_Bitmap * bitmap = NULL;
     const int border = 4;    
     int realWidth = 0;
     int realHeight = 0;
     int halfBorder = border / 2;
-    int code;
+    gft_symbol_t code;
+    gft_symbol_t symbols[4096] = {0}; /* this size must be controlled <<<--- FIX THIS */
     
-    char * str = "Русский текст";
-    unsigned int utf32[128];
-    
-    gft_utf8_to_utf32(str, utf32);
+    /* convert symbol set to utf32 */
+    gft_utf8_to_utf32(symbolSet, symbols);
     
     /* create font */
     font = calloc(sizeof(*font), 1);
 	font->size = size;
     font->refCounter = 1;    
-    font->glyphCount = 256; /* ONLY for test <<<--- FIX THIS */
+    gft_utf32_strlen(symbols, &font->glyphCount);
     font->glyphs = calloc(font->glyphCount, sizeof(*font->glyphs));
-
+    font->options = options;   
+    
     /* init freetype */
-	FT_Init_FreeType(&ftLibrary);	
+	if(FT_Init_FreeType(&ftLibrary)) {
+        goto error_cleanup;
+    }
     
     /* try to load file */
 	if(FT_New_Face(ftLibrary, filename, 0, &face)) {
-        FT_Done_FreeType(ftLibrary);  
-        return GFT_UNABLE_TO_LOAD_FONT;
+        goto error_cleanup;
     }
     
     /* set size and charmap */
-	FT_Set_Pixel_Sizes(face, 0, font->size);
-	FT_Select_Charmap(face, FT_ENCODING_UNICODE);
+	if(FT_Set_Pixel_Sizes(face, 0, font->size)) {
+        goto error_cleanup;
+    }
+	if(FT_Select_Charmap(face, FT_ENCODING_UNICODE)) {
+        goto error_cleanup;
+    }
 	
-	for (i = 0; i < font->glyphCount; i++) {
-		int charIndex = i;
+	for (i = 0; i < font->glyphCount; i++) {        
+        code = symbols[i];
         
-        /* ONLY for test - used to add russian characters <<<--- FIX THIS */
-		if (i >= 177) {
-			charIndex = 1024;
-			charIndexOffset++;
-		}
-        
-        code = charIndex + charIndexOffset;
-        
-		FT_Load_Glyph(face, FT_Get_Char_Index(face, code), FT_LOAD_DEFAULT);
-		FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL);
+		if(FT_Load_Glyph(face, FT_Get_Char_Index(face, code), FT_LOAD_DEFAULT)) {
+            goto error_cleanup;
+        }
+		if(FT_Render_Glyph(face->glyph, FT_RENDER_MODE_NORMAL)) {
+            goto error_cleanup;
+        }
 
 		bitmap = &face->glyph->bitmap;
 
@@ -450,7 +470,22 @@ gft_error_t gft_font_create(const char * filename, float size, gft_font_t ** fon
  
     *fontPtr = font;
     
+    /* everything succeeded */
 	return GFT_NO_ERROR;
+    
+/* something went wrong - clean up*/
+error_cleanup:
+    if(font) {
+        free(font->pixels);
+        free(font);
+    }
+    if(face) {
+        FT_Done_Face(face);    
+    }
+    if(ftLibrary) {
+        FT_Done_FreeType(ftLibrary);
+    }
+    return GFT_FREETYPE_ERROR;
 }
 
 /*
@@ -612,6 +647,7 @@ gft_error_t gft_font_free(gft_font_t * font) {
     
     --font->refCounter;
     if(font->refCounter == 0) {
+        free(font->glyphs);
         free(font->pixels);
         free(font);
     }
@@ -679,8 +715,8 @@ gft_glyph_find
     - finds glyph by unicode symbol
 ====================================
 */
-static gft_glyph_t * gft_glyph_find(gft_font_t * font, int symbol) {
-    int i;
+static gft_glyph_t * gft_glyph_find(gft_font_t * font, gft_symbol_t symbol) {
+    int i = 0;
     
     /* linear search for now (shitty and slow) - replace this with binary tree <<<--- FIX THIS */
     for(i = 0; i < font->glyphCount; ++i) {
@@ -850,6 +886,8 @@ gft_error_t gft_glyph_get_width(gft_font_t * font, gft_symbol_t symbol, int * wi
         return GFT_BAD_PARAMETER;
     }
     
+    *width = 0;
+    
     glyph = gft_glyph_find(font, symbol);
     
     if(glyph) {
@@ -875,6 +913,8 @@ gft_error_t gft_glyph_get_height(gft_font_t * font, gft_symbol_t symbol, int * h
     if(!height) {
         return GFT_BAD_PARAMETER;
     }
+    
+    *height = 0;
     
     glyph = gft_glyph_find(font, symbol);
     

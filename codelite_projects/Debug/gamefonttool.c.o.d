@@ -1,4 +1,4 @@
-Debug/gamefonttool.c.o: gamefonttool.c gamefonttool.h \
+Debug/gamefonttool.c.o: ../src/gamefonttool.c ../src/gamefonttool.h \
  C:/MinGW-4.8.1/include/freetype2/ft2build.h \
  C:/MinGW-4.8.1/include/freetype2/config/ftheader.h \
  C:/MinGW-4.8.1/include/freetype2/freetype.h \
@@ -12,7 +12,7 @@ Debug/gamefonttool.c.o: gamefonttool.c gamefonttool.h \
  C:/MinGW-4.8.1/include/freetype2/ftmoderr.h \
  C:/MinGW-4.8.1/include/freetype2/fterrdef.h
 
-gamefonttool.h:
+../src/gamefonttool.h:
 
 C:/MinGW-4.8.1/include/freetype2/ft2build.h:
 

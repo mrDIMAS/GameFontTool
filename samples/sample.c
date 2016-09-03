@@ -208,6 +208,13 @@ int main(int argc, char **argv) {
     gft_font_t * font = NULL;
     GLuint texture;
     
+    const char * symbolSet = 
+        "1234567890-=!@#$%^&*()_+\\|/><,.?~`';: "
+        "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЬЪЫЭЮЯ"
+        "абвгдеёжзийклмнопрстуфхцчшщьъыэюя"
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+        "abcdefghijklmnopqrstuvwxyz";
+    
     const char * gft_text = 
         "Съешь еще этих мягких французских булок да выпей чаю.\n"
         "The quick brown fox jumps over a lazy dog. 1234567890. !@#$%^&*()_+<>?\n"
@@ -215,14 +222,15 @@ int main(int argc, char **argv) {
         "Below you can see glyph atlas\n";
         
     init_opengl();
-    
-    gft_font_create("data/test.ttf", 20, &font);
-    
-#if 0
+
+#if 0    
+    gft_font_create("data/test.ttf", 20, GFT_DEFAULT, symbolSet, &font);
+#endif
+
     /* try to load font from cache */
     if(gft_font_load("test.gft", &font)) {
         /* cached font does not exists, so create it */
-        if(gft_font_create("test.ttf", 40, &font)) {
+        if(gft_font_create("data/test.ttf", 20, GFT_DEFAULT, symbolSet, &font)) {
             printf("failed to load test.ttf\n");
         } else {
             /* save font to cache */
@@ -232,7 +240,7 @@ int main(int argc, char **argv) {
     } else {
         printf("loaded from cache");
     }
-#endif
+
 
     texture = atlas_to_texture(font);
     

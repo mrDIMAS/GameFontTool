@@ -2,7 +2,7 @@
 <CodeLite_Workspace Name="GameFontTool" Database="">
   <Project Name="GameFontTool" Path="GameFontTool.project" Active="Yes"/>
   <BuildMatrix>
-    <WorkspaceConfiguration Name="DynamicLibrary" Selected="no">
+    <WorkspaceConfiguration Name="DynamicLibrary" Selected="yes">
       <Environment/>
       <Project Name="GameFontTool" ConfigName="DynamicLibrary"/>
     </WorkspaceConfiguration>
@@ -10,7 +10,7 @@
       <Environment/>
       <Project Name="GameFontTool" ConfigName="Standalone"/>
     </WorkspaceConfiguration>
-    <WorkspaceConfiguration Name="Sample" Selected="yes">
+    <WorkspaceConfiguration Name="Sample" Selected="no">
       <Environment/>
       <Project Name="GameFontTool" ConfigName="Sample"/>
     </WorkspaceConfiguration>

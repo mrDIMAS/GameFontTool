@@ -52,6 +52,7 @@ typedef struct gft_rgba_pixel_t {
 
 typedef enum gft_error_t {
     GFT_NO_ERROR, /* everything is ok */
+    GFT_FREETYPE_ERROR, /* somethings went wrong inside freetype */
     GFT_NOT_ENOUGH_MEMORY, /* memory allocation failed */
     GFT_UNEXPECTED_END_OF_FILE, /* occures when you trying to load damaged gft file */
     GFT_BAD_FONT, /* font does not exist */
@@ -64,7 +65,8 @@ typedef enum gft_error_t {
 } gft_error_t;
 
 typedef enum gft_atlas_options_t {
-    GFT_ATLAS_STRICT_POW2_SIZE = 0 /* option for old GPU's that does not support non-pow2 textures */
+    GFT_DEFAULT = 0,
+    GFT_ATLAS_STRICT_POW2_SIZE = 1 /* option for old GPU's that does not support non-pow2 textures */
 } gft_atlas_options_t;
    
 /* 
@@ -91,9 +93,12 @@ gft_font_create
     - generates bitmap atlas with texture coordinates and metrics for each glyph
     - loaded font is ready to render    
     - loaded font can be saved to *.gft by gft_font_save
+    - 'options' is combinations of something from gft_atlas_options_t
+    - 'symbolSet' is an utf8 string with all symbols, that must be associated with this font, i.e. 
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=+<>/.,АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЬЪЭЮЯ"!№;%:?"
 ===============
 */
-gft_error_t gft_font_create(const char * filename, float size, gft_font_t ** fontPtr);
+gft_error_t gft_font_create(const char * filename, float size, int options, const char * symbolSet, gft_font_t ** fontPtr);
 
 /* 
 ===============
