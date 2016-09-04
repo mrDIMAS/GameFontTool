@@ -1,15 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#ifdef _TEST
+
+#include <windows.h>
 /* include gl headers */
 #include <gl/gl.h>
 #include <gl/glu.h>
 
 #include "../src/gamefonttool.h"
 
-#ifdef _TEST
 
-#include <windows.h>
 
 HGLRC glContext;
 HDC deviceContext;

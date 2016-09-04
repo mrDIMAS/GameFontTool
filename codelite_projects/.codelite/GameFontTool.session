@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Session Name="C:\GameFontTool\GameFontTool.workspace">
-  <int Value="0" Name="m_selectedTab"/>
-  <wxString Value="C:\GameFontTool\GameFontTool.workspace" Name="m_workspaceName"/>
+<Session Name="C:\GameFontTool\codelite_projects\GameFontTool.workspace">
+  <int Value="2" Name="m_selectedTab"/>
+  <wxString Value="C:\GameFontTool\codelite_projects\GameFontTool.workspace" Name="m_workspaceName"/>
   <TabInfoArray Name="TabInfoArray">
     <TabInfo>
-      <wxString Value="C:\GameFontTool\gamefonttool.c" Name="FileName"/>
-      <int Value="105" Name="FirstVisibleLine"/>
-      <int Value="113" Name="CurrentLine"/>
+      <wxString Value="C:\GameFontTool\samples\sample.c" Name="FileName"/>
+      <int Value="210" Name="FirstVisibleLine"/>
+      <int Value="223" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="C:\GameFontTool\gamefonttool.h" Name="FileName"/>
-      <int Value="64" Name="FirstVisibleLine"/>
-      <int Value="84" Name="CurrentLine"/>
+      <wxString Value="C:\GameFontTool\src\gamefonttool.c" Name="FileName"/>
+      <int Value="75" Name="FirstVisibleLine"/>
+      <int Value="96" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="C:\GameFontTool\test.c" Name="FileName"/>
-      <int Value="151" Name="FirstVisibleLine"/>
-      <int Value="162" Name="CurrentLine"/>
+      <wxString Value="C:\GameFontTool\src\gamefonttool.h" Name="FileName"/>
+      <int Value="24" Name="FirstVisibleLine"/>
+      <int Value="37" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>
     <TabInfo>
-      <wxString Value="C:\MinGW-4.8.1\include\wchar.h" Name="FileName"/>
-      <int Value="135" Name="FirstVisibleLine"/>
-      <int Value="136" Name="CurrentLine"/>
+      <wxString Value="C:\MinGW-4.8.1\include\freetype2\freetype.h" Name="FileName"/>
+      <int Value="357" Name="FirstVisibleLine"/>
+      <int Value="375" Name="CurrentLine"/>
       <wxArrayString Name="Bookmarks"/>
       <IntVector Name="CollapsedFolds"/>
     </TabInfo>

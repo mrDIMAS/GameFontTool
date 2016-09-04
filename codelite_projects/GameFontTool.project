@@ -25,7 +25,7 @@
         <IncludePath Value="C:/MinGW-4.8.1/include/freetype2"/>
         <Preprocessor Value="NDEBUG"/>
       </Compiler>
-      <Linker Options="-Wl,--out-implib,libgamefonttool.a;" Required="yes">
+      <Linker Options="-Wl,--out-implib,&quot;../lib/libgamefonttool.a&quot;" Required="yes">
         <Library Value="libfreetype.a"/>
       </Linker>
       <ResourceCompiler Options="" Required="no"/>

@@ -1,6 +1,8 @@
 /*
 GameFontTool 
 
+MIT License
+
 Copyright (c) 2016 Stepanov Dmitriy a.k.a mrDIMAS
 
 Permission is hereby granted, free of charge, to any person obtaining a copy 
@@ -50,7 +52,7 @@ typedef struct gft_rect_t {
 } gft_rect_t;
 
 struct gft_glyph_t {
-    int code; /* unicode position */
+    gft_symbol_t code; /* unicode position */
     int width;
 	int height;
 	gft_rgba_pixel_t * pixels;

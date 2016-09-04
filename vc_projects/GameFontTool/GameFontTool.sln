@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25123.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameFontTool", "GameFontTool.vcxproj", "{3E0C2B8A-ED19-4806-913B-B189F0E5A2EA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		DynamicLibrary|x64 = DynamicLibrary|x64
+		DynamicLibrary|x86 = DynamicLibrary|x86
+		Sample|x64 = Sample|x64
+		Sample|x86 = Sample|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{3E0C2B8A-ED19-4806-913B-B189F0E5A2EA}.DynamicLibrary|x64.ActiveCfg = DynamicLibrary|x64
+		{3E0C2B8A-ED19-4806-913B-B189F0E5A2EA}.DynamicLibrary|x64.Build.0 = DynamicLibrary|x64
+		{3E0C2B8A-ED19-4806-913B-B189F0E5A2EA}.DynamicLibrary|x86.ActiveCfg = DynamicLibrary|Win32
+		{3E0C2B8A-ED19-4806-913B-B189F0E5A2EA}.DynamicLibrary|x86.Build.0 = DynamicLibrary|Win32
+		{3E0C2B8A-ED19-4806-913B-B189F0E5A2EA}.Sample|x64.ActiveCfg = Sample|x64
+		{3E0C2B8A-ED19-4806-913B-B189F0E5A2EA}.Sample|x64.Build.0 = Sample|x64
+		{3E0C2B8A-ED19-4806-913B-B189F0E5A2EA}.Sample|x86.ActiveCfg = Sample|Win32
+		{3E0C2B8A-ED19-4806-913B-B189F0E5A2EA}.Sample|x86.Build.0 = Sample|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

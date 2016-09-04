@@ -1,0 +1,21 @@
+﻿  sample.c
+  gamefonttool.c
+..\..\src\gamefonttool.c(186): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+..\..\src\gamefonttool.c(187): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+..\..\src\gamefonttool.c(274): warning C4244: '=': conversion from 'double' to 'int', possible loss of data
+..\..\src\gamefonttool.c(417): warning C4244: 'function': conversion from 'float' to 'FT_UInt', possible loss of data
+..\..\src\gamefonttool.c(540): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+..\..\src\gamefonttool.c(504): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
+..\..\src\gamefonttool.c(595): warning C4996: 'strcpy': This function or variable may be unsafe. Consider using strcpy_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+..\..\src\gamefonttool.c(600): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+..\..\src\gamefonttool.c(588): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  C:\Program Files (x86)\Windows Kits\10\Include\10.0.10240.0\ucrt\stdio.h(205): note: see declaration of 'fopen'
+..\..\src\gamefonttool.c(795): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+..\..\src\gamefonttool.c(842): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+     Creating library ../../lib/libgamefonttool.lib and object ../../lib/libgamefonttool.exp
+LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Generating code
+  All 24 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  GameFontTool.vcxproj -> C:\GameFontTool\vc_projects\GameFontTool\../../bin/libgamefonttool.dll

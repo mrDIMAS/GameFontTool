@@ -1,6 +1,8 @@
 /*
 GameFontTool 
 
+MIT License
+
 Copyright (c) 2016 Stepanov Dmitriy a.k.a mrDIMAS
 
 Permission is hereby granted, free of charge, to any person obtaining a copy 
@@ -23,6 +25,16 @@ SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 #ifndef GAME_FONT_TOOL_H
 #define GAME_FONT_TOOL_H
+
+#ifdef GFT_SHARED
+    #ifdef _MSC_VER        
+        #define GFT_API __declspec(dllexport)
+    #elif defined(_GCC)
+        #define GFT_API __attribute__((visibility("default")))
+    #endif
+#else 
+    #define GFT_API
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -76,7 +88,7 @@ gft_utf8_to_utf32
     - inString is pointer to source string
 ===============
 */ 
-gft_error_t gft_utf8_to_utf32(const char * inString, gft_symbol_t * out);
+GFT_API gft_error_t gft_utf8_to_utf32(const char * inString, gft_symbol_t * out);
 
 /* 
 ===============
@@ -84,7 +96,7 @@ gft_utf32_strlen
     - computes utf32 string length
 ===============
 */ 
-gft_error_t gft_utf32_strlen(gft_symbol_t * utf32str, int * out);
+GFT_API gft_error_t gft_utf32_strlen(gft_symbol_t * utf32str, int * out);
 
 /* 
 ===============
@@ -98,7 +110,7 @@ gft_font_create
         "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-=+<>/.,АБВГДЕЁЖЗИКЛМНОПРСТУФХЦЧШЩЬЪЭЮЯ"!№;%:?"
 ===============
 */
-gft_error_t gft_font_create(const char * filename, float size, int options, const char * symbolSet, gft_font_t ** fontPtr);
+GFT_API gft_error_t gft_font_create(const char * filename, float size, int options, const char * symbolSet, gft_font_t ** fontPtr);
 
 /* 
 ===============
@@ -107,7 +119,7 @@ gft_font_load
     - can be used in pair with gft_font_create to create font cache on hard drive
 ===============
 */
-gft_error_t gft_font_load(const char * filename, gft_font_t ** fontPtr);
+GFT_API gft_error_t gft_font_load(const char * filename, gft_font_t ** fontPtr);
 
 /* 
 ===============
@@ -116,7 +128,7 @@ gft_font_add_reference
     - use this to share font between multiple objects
 ===============
 */
-gft_error_t gft_font_add_reference(gft_font_t * font);
+GFT_API gft_error_t gft_font_add_reference(gft_font_t * font);
 
 /* 
 ===============
@@ -124,7 +136,7 @@ gft_font_save
     - saves font atlas with texture coordinates and metrics for each glyph to *.gft file
 ===============
 */
-gft_error_t gft_font_save(gft_font_t * font, const char * filename);
+GFT_API gft_error_t gft_font_save(gft_font_t * font, const char * filename);
 
 /* 
 ===============
@@ -132,7 +144,7 @@ gft_font_free
     - frees allocated memory for font
 ===============
 */
-gft_error_t gft_font_free(gft_font_t * font);
+GFT_API gft_error_t gft_font_free(gft_font_t * font);
 
 /* 
 ===============
@@ -140,7 +152,7 @@ gft_font_get_width
     - returns atlas width in pixels
 ===============
 */
-gft_error_t gft_font_get_width(gft_font_t * font, int * width);
+GFT_API gft_error_t gft_font_get_width(gft_font_t * font, int * width);
 
 /* 
 ===============
@@ -148,7 +160,7 @@ gft_font_get_height
     - returns atlas height in pixels
 ===============
 */
-gft_error_t gft_font_get_height(gft_font_t * font, int * height);
+GFT_API gft_error_t gft_font_get_height(gft_font_t * font, int * height);
 
 /* 
 ===============
@@ -156,7 +168,7 @@ gft_font_get_atlas_size
     - returns atlas size in bytes
 ===============
 */
-gft_error_t gft_font_get_atlas_size(gft_font_t * font, int * size);
+GFT_API gft_error_t gft_font_get_atlas_size(gft_font_t * font, int * size);
 
 /* 
 ===============
@@ -165,7 +177,7 @@ gft_font_get_atlas_pixels
     - you can pass this pointer to glTexImage2D without any conversions
 ===============
 */
-gft_error_t gft_font_get_atlas_pixels(gft_font_t * font, gft_rgba_pixel_t ** pixels);
+GFT_API gft_error_t gft_font_get_atlas_pixels(gft_font_t * font, gft_rgba_pixel_t ** pixels);
 
 /* 
 ===============
@@ -173,7 +185,7 @@ gft_glyph_get_caret_offset_x
     - returns x caret offset for rendering
 ===============
 */
-gft_error_t gft_glyph_get_caret_offset_x(gft_font_t * font, gft_symbol_t symbol, int * offset);
+GFT_API gft_error_t gft_glyph_get_caret_offset_x(gft_font_t * font, gft_symbol_t symbol, int * offset);
 
 /* 
 ===============
@@ -181,7 +193,7 @@ gft_glyph_get_caret_offset_y
     - returns y caret offset for rendering
 ===============
 */
-gft_error_t gft_glyph_get_caret_offset_y(gft_font_t * font, gft_symbol_t symbol, int * offset);
+GFT_API gft_error_t gft_glyph_get_caret_offset_y(gft_font_t * font, gft_symbol_t symbol, int * offset);
 
 /* 
 ===============
@@ -189,7 +201,7 @@ gft_glyph_get_caret_step_x
     - returns x step of caret for rendering
 ===============
 */
-gft_error_t gft_glyph_get_caret_step_x(gft_font_t * font, gft_symbol_t symbol, int * step);
+GFT_API gft_error_t gft_glyph_get_caret_step_x(gft_font_t * font, gft_symbol_t symbol, int * step);
 
 /* 
 ===============
@@ -197,7 +209,7 @@ gft_glyph_get_caret_step_y
     - returns y step of caret for rendering
 ===============
 */
-gft_error_t gft_glyph_get_caret_step_y(gft_font_t * font, gft_symbol_t symbol, int * step);
+GFT_API gft_error_t gft_glyph_get_caret_step_y(gft_font_t * font, gft_symbol_t symbol, int * step);
 
 /* 
 ===============
@@ -205,7 +217,7 @@ gft_glyph_get_width
     - returns width of a glyph
 ===============
 */
-gft_error_t gft_glyph_get_width(gft_font_t * font, gft_symbol_t symbol, int * width);
+GFT_API gft_error_t gft_glyph_get_width(gft_font_t * font, gft_symbol_t symbol, int * width);
 
 /* 
 ===============
@@ -213,7 +225,7 @@ gft_glyph_get_height
     - returns height of a glyph
 ===============
 */
-gft_error_t gft_glyph_get_height(gft_font_t * font, gft_symbol_t symbol, int * height);
+GFT_API gft_error_t gft_glyph_get_height(gft_font_t * font, gft_symbol_t symbol, int * height);
 
 /*
 gft_glyph_get_texcoords
@@ -226,7 +238,7 @@ gft_glyph_get_texcoords
         
     texcoords - pointer to gft_texcoord_t[4]
 */
-gft_error_t gft_glyph_get_texcoords(gft_font_t * font, gft_symbol_t symbol, gft_texcoord_t * texcoords);
+GFT_API gft_error_t gft_glyph_get_texcoords(gft_font_t * font, gft_symbol_t symbol, gft_texcoord_t * texcoords);
 
 #ifdef __cplusplus
 }
