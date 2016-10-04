@@ -130,7 +130,7 @@ void render_string(gft_font_t * font, int originX, int originY, const char * str
     gft_symbol_t utf32str[2048];
         
     /* convert string to utf32 */
-    gft_utf8_to_utf32(str, utf32str);
+    gft_utf8_to_utf32(str, utf32str, 2048);
     
     /* compute length */
     gft_utf32_strlen(utf32str, &len);
@@ -252,7 +252,7 @@ int main(int argc, char **argv) {
             DispatchMessage(&message);
         }
         
-        glClearColor(0.5, 0.3, 0.2, 1.0);
+        glClearColor(0.0, 0.5, 1.0, 1.0);
         glClear(GL_COLOR_BUFFER_BIT);
         
         glMatrixMode(GL_PROJECTION);

@@ -73,7 +73,9 @@ typedef enum gft_error_t {
     GFT_UNKNOWN_FORMAT, /* occures when you trying to load non-gft file */
     GFT_UNABLE_TO_LOAD_FONT, /* something went wrong while loading font from gft file */
     GFT_UNABLE_TO_SAVE_FONT, /* something went wrong while saving font to gft file */
-    GFT_UNABLE_TO_PACK_FONT /* something in font packing (into atlas) went wrong */
+    GFT_UNABLE_TO_PACK_FONT, /* something in font packing (into atlas) went wrong */
+	GFT_OVERFLOW, /* overflow of passed buffer */ 
+	GFT_INVALID_UTF8_STRING, /* passed string has invalid format */
 } gft_error_t;
 
 typedef enum gft_atlas_options_t {
@@ -86,9 +88,13 @@ typedef enum gft_atlas_options_t {
 gft_utf8_to_utf32
     - converts utf8 string to utf32 
     - inString is pointer to source string
+	- when using MSVC, do not pass built-in strings to this function, or specify it as UTF8 with u8 prefix (>C++11 feature)
+	  like so 
+
+	  const char * utf8 = u8"This is UTF8 string;
 ===============
 */ 
-GFT_API gft_error_t gft_utf8_to_utf32(const char * inString, gft_symbol_t * out);
+GFT_API gft_error_t gft_utf8_to_utf32(const char * inString, gft_symbol_t * out, int bufferSize);
 
 /* 
 ===============

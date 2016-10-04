@@ -79,7 +79,11 @@ struct gft_font_t {
     int atlasWidth;
     int atlasHeight;
     int options;
+	int glyphsSorted;
 };
+
+/* size of internal buffer to receive UTF32 string being converted from UTF8 */
+#define GFT_CVT_SIZE 16384
 
 #define MASKBITS 0x3F
 #define MASKBYTE 0x80
@@ -90,7 +94,7 @@ struct gft_font_t {
 #define MASK6BYTES 0xFC
 
 /* rewritten http://www.codeguru.com/cpp/misc/misc/multi-lingualsupport/article.php/c10451/The-Basics-of-UTF8.htm */
-gft_error_t gft_utf8_to_utf32(const char * inString, gft_symbol_t * out) {
+gft_error_t gft_utf8_to_utf32(const char * inString, gft_symbol_t * out, int bufferSize) {
     int i = 0;
     int n = 0;
     unsigned char * in = (unsigned char *)inString;
@@ -113,8 +117,7 @@ gft_error_t gft_utf8_to_utf32(const char * inString, gft_symbol_t * out) {
             i += 4;
         } else if((in[i] & MASK3BYTES) == MASK3BYTES) {
             /* 1110xxxx 10xxxxxx 10xxxxxx */
-            ch = ((in[i] & 0x0F) << 12) | ((in[i+1] & MASKBITS) << 6)
-            | (in[i+2] & MASKBITS);
+            ch = ((in[i] & 0x0F) << 12) | ((in[i+1] & MASKBITS) << 6) | (in[i+2] & MASKBITS);
             i += 3;
         } else if((in[i] & MASK2BYTES) == MASK2BYTES) { 
             /* 110xxxxx 10xxxxxx */
@@ -124,9 +127,15 @@ gft_error_t gft_utf8_to_utf32(const char * inString, gft_symbol_t * out) {
             /* 0xxxxxxx */
             ch = in[i];
             i += 1;
-        }
+		} else {
+			return GFT_INVALID_UTF8_STRING;
+		}
 
         out[n++] = ch;
+
+		if (n >= bufferSize) {
+			return GFT_OVERFLOW;
+		}
     }
     
     return GFT_NO_ERROR;
@@ -267,16 +276,16 @@ static int gft_font_compute_atlas_size(gft_font_t * font) {
     }
     
     /* 
-    size of atlas is the square root of totalArea + 10% 
-    by the way, 10% is empirical value and this value must be tested on 
+    size of atlas is the square root of totalArea + 25% 
+    by the way, 25% is empirical value and this value must be tested on 
     various count of fonts to be sure, that is good value for all cases
     */
-    size = sqrt(totalArea) * 1.1f;
+    size = sqrt(totalArea) * 1.25f;
     
     /* for old gpu's adjust size to be power of two */
-    if(font->options & GFT_ATLAS_STRICT_POW2_SIZE) {
+    //if(font->options & GFT_ATLAS_STRICT_POW2_SIZE) {
         size = gft_ceil_pow2(size);
-    }
+    //}
 
     return size;
 }
@@ -377,6 +386,7 @@ gft_font_create
 ====================================
 */
 gft_error_t gft_font_create(const char * filename, float size, int options, const char * symbolSet, gft_font_t ** fontPtr) {
+
     FT_Library ftLibrary = NULL;
     FT_Face face = NULL;    
     gft_font_t * font = NULL;
@@ -390,11 +400,11 @@ gft_error_t gft_font_create(const char * filename, float size, int options, cons
     int realHeight = 0;
     int halfBorder = border / 2;
     gft_symbol_t code;
-    gft_symbol_t symbols[4096] = {0}; /* this size must be controlled <<<--- FIX THIS */
-    
+    gft_symbol_t symbols[GFT_CVT_SIZE] = {0}; /* this size must be controlled <<<--- FIX THIS */
+
     /* convert symbol set to utf32 */
-    gft_utf8_to_utf32(symbolSet, symbols);
-    
+    gft_utf8_to_utf32(symbolSet, symbols, GFT_CVT_SIZE);
+
     /* create font */
     font = calloc(sizeof(*font), 1);
 	font->size = size;
@@ -403,6 +413,8 @@ gft_error_t gft_font_create(const char * filename, float size, int options, cons
     font->glyphs = calloc(font->glyphCount, sizeof(*font->glyphs));
     font->options = options;   
     
+	printf("glyphs passed %d", font->glyphCount);
+
     /* init freetype */
 	if(FT_Init_FreeType(&ftLibrary)) {
         goto error_cleanup;
@@ -467,8 +479,10 @@ gft_error_t gft_font_create(const char * filename, float size, int options, cons
     
 	FT_Done_Face(face);
 	FT_Done_FreeType(ftLibrary);    
-    
-	gft_font_pack(font);   
+
+	if (gft_font_pack(font)) {
+		goto error_cleanup;
+	}
  
     *fontPtr = font;
     
@@ -711,6 +725,31 @@ gft_error_t gft_font_get_atlas_size(gft_font_t * font, int * size) {
     return GFT_NO_ERROR;
 }
 
+
+/*
+====================================
+gft_glyph_comparer
+====================================
+*/
+static int gft_glyph_comparer(const void * a, const void * b) {
+	gft_glyph_t * glyphA = a;
+	gft_glyph_t * glyphB = b;
+
+	return glyphA->code - glyphB->code;
+}
+
+/*
+====================================
+gft_glyph_bseach_comparer
+====================================
+*/
+static int gft_glyph_bseach_comparer(const void *a, const void *b) {
+	gft_symbol_t symbol = *(gft_symbol_t*)a;
+	gft_glyph_t * glyph = b;
+
+	return symbol - glyph->code;
+}
+
 /*
 ====================================
 gft_glyph_find
@@ -719,15 +758,15 @@ gft_glyph_find
 */
 static gft_glyph_t * gft_glyph_find(gft_font_t * font, gft_symbol_t symbol) {
     int i = 0;
+	gft_glyph_t * glyph;
     
-    /* linear search for now (shitty and slow) - replace this with binary tree <<<--- FIX THIS */
-    for(i = 0; i < font->glyphCount; ++i) {
-        if(font->glyphs[i].code == symbol) {
-            return &font->glyphs[i];
-        }
-    }
-    
-    return NULL;
+	/* sort if not */
+	if (!font->glyphsSorted) {
+		qsort(font->glyphs, font->glyphCount, sizeof(*font->glyphs), gft_glyph_comparer);
+		font->glyphsSorted = 1;
+	}
+
+    return bsearch(&symbol, font->glyphs, font->glyphCount, sizeof(*font->glyphs), gft_glyph_bseach_comparer);
 }
 
 /*
